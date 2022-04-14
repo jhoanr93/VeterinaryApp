@@ -2,7 +2,7 @@ import {useState, useEffect} from "react"
 import { PatientList } from "./PatientList";
 import Error from './Error'
 
-const Form = ({ patientProp, setPatient, patientOnly }) => {
+const Form = ({ patientProp, setPatient, patientOnly, setPatientOnly }) => {
   const [name, setName] = useState('');
   const [owner, setOwner] = useState('');
   const [email, setEmail] = useState('');
@@ -12,8 +12,14 @@ const Form = ({ patientProp, setPatient, patientOnly }) => {
   const[error, setError] = useState(false)
 
   useEffect(()=>{
-    
-  }, [])
+    if(Object.keys(patientOnly).length > 0){
+      setName(patientOnly.name)
+      setOwner(patientOnly.owner)
+      setEmail(patientOnly.email)
+      setDischarge(patientOnly.discharge)
+      setSympton(patientOnly.symptom)
+    }
+  }, [patientOnly])
 
   const generateId = () => {
     const random = Math.random().toString(36).substring(2);
@@ -44,7 +50,21 @@ const Form = ({ patientProp, setPatient, patientOnly }) => {
 
     //console.log(ObjPatient)
     
-    setPatient([...patientProp, ObjPatient])
+    if(patientOnly.id){
+      ObjPatient.id = patientOnly.id
+
+      const updatedPatients = patientProp.map(patientState => patientState.id === patientOnly.id ? ObjPatient : patientState)
+        setPatient(updatedPatients)
+        setPatient({})
+    }else{
+      ObjPatient.id = generateId();
+      setPatient([...patientProp, ObjPatient])
+    }
+    
+
+
+
+
     
     //Restart form
     setName('')
@@ -54,32 +74,17 @@ const Form = ({ patientProp, setPatient, patientOnly }) => {
     setSympton('')
 
 
+
+
   }
 
-  const editar = (e) =>{
-    e.preventDefault();
 
-    const ObjPatient = {
-      name,
-      owner,
-      email,
-      discharge,
-      symptom,
-      id: generateId()
-    }
-
-    setName({name})
-    setOwner({owner})
-    setEmail({email})
-    setDischarge({discharge})
-    setSympton({symptom})
-  }
 
   return (
     <div className="md:w-1/2 lg:w2/5 mx-5">
         <h2 className="font-black text-3xl text-center">Follow Patient</h2>
 
-        <p className="text-lg mt-5 text-center mb-10"> Añade pacientes y {''}
+        <p className="text-lg mt-5 text-center mb-10"> Add patients and more... {''}
         <span className="font-bold text-indigo-600 text-lg"></span></p>
 
         <form className="bg-white shadow-md rounded-lg py-10 px-5 mb-10" 
@@ -132,7 +137,7 @@ const Form = ({ patientProp, setPatient, patientOnly }) => {
 
           <div>
             <label className="block text-gray uppercase font-bold mt-5" htmlFor="discharge">
-              Discharge
+              Discharge date
             </label>
             <input 
               id="discharge"
@@ -145,7 +150,7 @@ const Form = ({ patientProp, setPatient, patientOnly }) => {
 
           <div>
             <label className="block text-gray uppercase font-bold mt-5" htmlFor="email">
-              Symptom
+              Symptoms
             </label>
             <textarea
              id="symptom"
@@ -158,8 +163,8 @@ const Form = ({ patientProp, setPatient, patientOnly }) => {
           </div>
 
           <input type="submit"
-          className="bg-indigo-600 w-full p-3 text-white upper-case font-wold hover:bg-indigo-700 cursor-pointer transition-all mt-5 rounded-full"
-          value="Add patient"/>
+          className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-all mt-5 rounded-full"
+          value={ patientOnly.id ? 'Edit patient': 'Add patient'}/>
 
         </form>
     </div>

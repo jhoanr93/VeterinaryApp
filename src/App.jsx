@@ -18,6 +18,7 @@ function App() {
         patientProp = {patientVar}
         setPatient = {setPatient}
         patientOnly = {patientOnly}
+        setPatientOnly ={setPatientOnly}
         />
         <PatientList
           patientProp = {patientVar}

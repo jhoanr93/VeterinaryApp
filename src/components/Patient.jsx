@@ -29,7 +29,7 @@ export const Patient = ({patientProp, setPatientOnly}) => {
 
       <div className=" flex justify-between mt-10">
         <button className="py-2 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase rounded-full"
-        onClick={() => setPatientOnly(patientOnly)}
+        onClick={() => setPatientOnly(patientProp)}
         >
           Edit
         </button>
