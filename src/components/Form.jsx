@@ -1,15 +1,78 @@
 import {useState, useEffect} from "react"
+import { PatientList } from "./PatientList";
+import Error from './Error'
 
-const Form = () => {
+const Form = ({ patientProp, setPatient, patientOnly }) => {
   const [name, setName] = useState('');
   const [owner, setOwner] = useState('');
   const [email, setEmail] = useState('');
   const [discharge, setDischarge] = useState('');
   const [symptom, setSympton] = useState('');
 
-  const handleSubmit = () => {
+  const[error, setError] = useState(false)
+
+  useEffect(()=>{
+    
+  }, [])
+
+  const generateId = () => {
+    const random = Math.random().toString(36).substring(2);
+    const fecha = Date.now().toString(36)
+
+    return random + fecha
+  }
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Send form')
+
+    if ([name, owner, email, discharge, symptom].includes('')){
+      console.log('Empty field')
+      setError(true)
+      return;
+    }
+    setError(false)
+
+    //Patient object
+    const ObjPatient = {
+      name,
+      owner,
+      email,
+      discharge,
+      symptom,
+      id: generateId()
+    }
+
+    //console.log(ObjPatient)
+    
+    setPatient([...patientProp, ObjPatient])
+    
+    //Restart form
+    setName('')
+    setOwner('')
+    setEmail('')
+    setDischarge('')
+    setSympton('')
+
+
+  }
+
+  const editar = (e) =>{
+    e.preventDefault();
+
+    const ObjPatient = {
+      name,
+      owner,
+      email,
+      discharge,
+      symptom,
+      id: generateId()
+    }
+
+    setName({name})
+    setOwner({owner})
+    setEmail({email})
+    setDischarge({discharge})
+    setSympton({symptom})
   }
 
   return (
@@ -19,7 +82,12 @@ const Form = () => {
         <p className="text-lg mt-5 text-center mb-10"> Añade pacientes y {''}
         <span className="font-bold text-indigo-600 text-lg"></span></p>
 
-        <form className="bg-white shadow-md rounded-lg py-10 px-5 mb-10" onSubmit={handleSubmit}>
+        <form className="bg-white shadow-md rounded-lg py-10 px-5 mb-10" 
+        onSubmit={handleSubmit}>
+          
+          { error && <Error message="All fields are mandatory"></Error>}
+          
+          
           <div className="mb-5">
             <label className="block text-gray uppercase font-bold" htmlFor="pet">
               Pet's Name
@@ -91,7 +159,7 @@ const Form = () => {
 
           <input type="submit"
           className="bg-indigo-600 w-full p-3 text-white upper-case font-wold hover:bg-indigo-700 cursor-pointer transition-all mt-5 rounded-full"
-          value="Add patient" />
+          value="Add patient"/>
 
         </form>
     </div>
